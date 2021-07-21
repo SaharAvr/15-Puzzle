@@ -1,0 +1,151 @@
+@import '~shared/styles/_theme.scss';
+
+@font-face {
+  font-family: Poppins-Regular;
+  src: url('./assets/fonts/poppins/Poppins-Regular.ttf'); 
+}
+
+@font-face {
+  font-family: Poppins-Medium;
+  src: url('./assets/fonts/poppins/Poppins-Medium.ttf'); 
+}
+
+@font-face {
+  font-family: Poppins-Bold;
+  src: url('./assets/fonts/poppins/Poppins-Bold.ttf'); 
+}
+
+@font-face {
+  font-family: Poppins-SemiBold;
+  src: url('./assets/fonts/poppins/Poppins-SemiBold.ttf'); 
+}
+
+@font-face {
+  font-family: Material-Design-Iconic-Font;
+  src: url('./assets/fonts/iconic/Material-Design-Iconic-Font.ttf'); 
+}
+
+@font-face {
+  font-family: FontAwesome;
+  src: url('./assets/fonts/font-awesome/FontAwesome-Webfont.ttf'); 
+}
+
+body {
+  min-height: 100vh;
+  height: 100%;
+  margin: 0;
+  font-family: Poppins-Medium;
+  color: map-get($colors, "textDefault");
+  background-image: url("./assets/images/background.jpg");
+  background-size: cover;
+
+  h1, h2, h3, h4 ,h5, h6 {
+    font-family: Poppins-Bold;
+  }
+
+  h1 {
+    font-size: 48px;
+    margin: 0 0 8px 0;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 40px;
+    margin: 0;
+  }
+
+  h3 {
+    font-size: 32px;
+    margin: 0;
+  }
+
+  h4 {
+    font-size: 24px;
+    margin: 0;
+  }
+
+  p {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  a {
+    font-size: 16px;
+  }
+
+  button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+
+  [id="root"] {
+    display: flex;
+    min-height: 100vh;
+
+    main {
+      min-width: map-get($sizes, "minPhoneWidth");
+      width: 100%;
+    }
+  }  
+
+  :global(.withError) {
+    input {
+      border: 2px solid map-get($colors, "errorBorder");
+    }
+  }
+
+  :global(.withError::before) {
+    content: attr(data-validate);
+    position: absolute;
+    max-width: 70%;
+    background-color: map-get($colors, "defaultBackground");
+    border: 1px solid map-get($colors, "errorText");
+    border-radius: 2px;
+    padding: 4px 25px 4px 10px;
+    bottom: 50%;
+    transform: translateY(50%);
+    right: 8px;
+    pointer-events: none;
+  
+    font-family: Poppins-Regular;
+    color: map-get($colors, "errorText");
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: left;
+  
+    animation: fadeIn 150ms ease-in;
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+  
+  :global(.withError::after) {
+    content: "\f06a";
+    font-family: FontAwesome;
+    display: block;
+    position: absolute;
+    color: map-get($colors, "errorText");
+    font-size: 16px;
+    bottom: 50%;
+    transform: translateY(50%);
+    right: 16px;
+  }
+}
+
+@include for-tablet-up() {
+  body {
+    main {
+      padding: 48px;
+    }
+  }
+}
+
+@include for-desktop-up() {
+  body {
+    h1 {
+      font-size: 36px;
+    }
+  }
+}

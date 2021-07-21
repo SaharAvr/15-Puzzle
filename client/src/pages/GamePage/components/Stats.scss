@@ -1,0 +1,44 @@
+@import '~shared/styles/_theme.scss';
+
+.stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 32px;
+    
+    span {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 24px;
+
+        .restartButton {
+            margin-right: 16px;
+
+            button {
+                background-color: map-get($colors, "buttonNeutralBackground");
+            }
+        }
+
+        .pauseButton {
+            button {
+                background-color: map-get($colors, "buttonNegativeBackground");
+            }
+        }
+
+        .resumeButton {
+            button {
+                background-color: map-get($colors, "buttonPositiveBackground");
+            }
+        }
+    }
+    
+}

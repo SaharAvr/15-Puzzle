@@ -1,0 +1,9 @@
+@import './layouts.scss';
+
+@mixin for-tablet-up {
+    @media only screen and (min-width: map-get($sizes, "minTabletWidth")) { @content; }
+}
+
+@mixin for-desktop-up {
+    @media only screen and (min-width: map-get($sizes, "minDesktopWidth")) { @content; }
+}

@@ -1,0 +1,30 @@
+@import '~shared/styles/_theme.scss';
+
+.board {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    gap: 8px;
+
+    .tile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        min-height: 40px;
+        width: 10vw;
+        height: 10vw;
+        max-width: 136px;
+        max-height: 136px;
+        padding: 4px;
+        border-radius: 4px;
+        background-color: map-get($colors, "tileBackgroundActive");
+        cursor: pointer;
+        
+
+        &.empty {
+            visibility: hidden;
+            cursor: default;
+            pointer-events: none;
+        }
+    }
+}

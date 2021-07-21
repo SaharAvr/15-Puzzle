@@ -1,0 +1,76 @@
+@import '~shared/styles/_theme.scss';
+
+.animatedButton {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .animatedButtonInnerWrapper {
+        width: 100%;
+        display: block;
+        position: relative;
+        z-index: 1;
+        border-radius: 24px;
+        box-shadow: 0px 0px 8px 0px #ffffff3b;
+        overflow: hidden;
+        margin: 0 auto;
+
+        .animatedButtonBgContainer {
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            left: -100%;
+            width: 300%;
+            height: 100%;
+            background-color: map-get($colors, "buttonFocused");
+            background: linear-gradient(
+                to right,
+                map-get($colors, "buttonFocusedLite"),
+                map-get($colors, "buttonFocused"),
+                map-get($colors, "buttonFocusedLite"),
+                map-get($colors, "buttonFocused")
+            );
+            transition: all 0.4s;
+        }
+
+        button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 50px;
+
+            a {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: Poppins-Medium;
+                font-size: 16px;
+                padding: 0 20px;
+                color: map-get($colors, "buttonText");
+                line-height: 1.2;
+                text-transform: uppercase;
+                text-decoration: none;
+            }
+        }
+          
+        &:focus, &:hover {
+            .animatedButtonBgContainer {
+                left: 0;
+            }
+        }
+    }
+
+    &.disabled {
+        .animatedButtonBgContainer {
+            background: none;
+            background-color: map-get($colors, "buttonDisabledBackground");
+        }
+        button {
+            pointer-events: none;
+            background-color: unset !important;
+        }
+    }
+}

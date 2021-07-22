@@ -10,7 +10,7 @@ import actions from 'store/actions';
 
 import styles from './Stats.scss';
 
-const Stats = ({ restartGame }) => {
+const Stats = ({ className, restartGame }) => {
   
   const dispatch = useDispatch();
 
@@ -64,7 +64,7 @@ const Stats = ({ restartGame }) => {
   React.useEffect(updateTimeRef, [updateTimeRef]);
 
   return (
-    <div className={styles.stats}>
+    <div className={classNames(styles.stats, className)}>
 
       <div className={styles.actions}>
         <AnimatedButton
@@ -94,10 +94,12 @@ const Stats = ({ restartGame }) => {
 };
 
 Stats.defaultProps = {
+  className: '',
   restartGame() {},
 };
 
 Stats.propTypes = {
+  className: PropTypes.string,
   restartGame: PropTypes.func,
 };
 

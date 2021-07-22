@@ -11,10 +11,15 @@
         margin-bottom: 16px;
         text-align: center;
         animation: fadeIn 250ms ease-in;
+        order: 0;
 
         @media screen and (prefers-reduced-motion: reduce) {
             animation: none;
         }
+    }
+
+    [data-id="board"] {
+        order: 1;
     }
 
     &.puzzleSolved {
@@ -35,7 +40,18 @@
         }
     }
 
-    .restartButton {
-        margin-bottom: 24px;
+    .stats {
+        order: 2
+    }
+}
+
+@include for-tablet-up() {
+    .gamePage {
+        [data-id="board"] {
+            order: 2;
+        }
+        .stats {
+            order: 1;
+        }
     }
 }

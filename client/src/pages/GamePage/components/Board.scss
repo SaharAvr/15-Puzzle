@@ -11,8 +11,8 @@
         justify-content: center;
         min-width: 40px;
         min-height: 40px;
-        width: 10vw;
-        height: 10vw;
+        width: 12vw;
+        height: 12vw;
         max-width: 136px;
         max-height: 136px;
         padding: 4px;
@@ -20,6 +20,9 @@
         background-color: map-get($colors, "tileBackgroundActive");
         cursor: pointer;
         
+        &:focus, &:hover {
+            filter: brightness(1.25);
+        }
 
         &.empty {
             visibility: hidden;

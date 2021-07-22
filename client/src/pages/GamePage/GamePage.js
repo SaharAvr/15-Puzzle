@@ -101,7 +101,7 @@ const GamePage = () => {
       
       {initialConfiguration && (
         <>
-          <Stats {...{ restartGame }}/>
+          <Stats {...{ className: styles.stats, restartGame }}/>
           <Board {...{ initialConfiguration, onSolveCallback }}/>
         </>
       )}

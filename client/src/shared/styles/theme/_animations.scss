@@ -28,3 +28,15 @@
 	  opacity: 1;
 	}
 }
+
+@keyframes flicker {
+	0% {
+		filter: saturate(2);
+	}
+	50% {
+		filter: saturate(5);
+	}
+	100% {
+		filter: saturate(2);
+	}
+}

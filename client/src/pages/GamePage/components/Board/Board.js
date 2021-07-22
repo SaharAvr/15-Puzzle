@@ -9,10 +9,13 @@ import { pathNames } from 'shared/routes/consts';
 import { selectMoves } from 'shared/selectors';
 import actions from 'store/actions';
 
+import useCheats from './useCheats';
 import * as boardHelper from './boardHelper';
 import styles from './Board.scss';
 
 const Board = ({ initialConfiguration, onSolveCallback }) => {
+
+  const { activeCheat, setActiveCheatData } = useCheats();
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -81,15 +84,7 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
 
   }, [paddedConfiguration]);
   
-  const onTileClick = React.useCallback(e => {
-    
-    const tileValue = Number(e.target.dataset.tileValue);
-    const tileIndex = Number(e.target.dataset.tileIndex);
-
-    const isEmptyTile = (tileValue === 0);
-    if (isEmptyTile) {
-      return;
-    }
+  const moveTile = React.useCallback(({ tileIndex, tileValue }) => {
 
     const paddedTileNeighbors = getPaddedTileNeighbors(tileIndex);
 
@@ -110,6 +105,65 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
     
     dispatch(actions.setMoves(moves + 1));
 
+    return newNextConfiguration;
+
+  }, [currentConfiguration, dispatch, getPaddedTileNeighbors, moves]);
+
+  const swapTiles = React.useCallback((tile1Index, tile2Index) => {
+
+    const newNextConfiguration = [...currentConfiguration];
+    newNextConfiguration[tile1Index] = { ...currentConfiguration[tile2Index], className: '' };
+    newNextConfiguration[tile2Index] = { ...currentConfiguration[tile1Index], className: '' };
+    setNextConfiguration(newNextConfiguration);
+    
+    dispatch(actions.setMoves(moves + 1));
+
+    return newNextConfiguration;
+
+  }, [currentConfiguration, dispatch, moves]);
+
+  const onTileClick = React.useCallback(e => {
+    
+    const tileIndex = Number(e.target.dataset.tileIndex);
+    const tileValue = Number(e.target.dataset.tileValue);
+
+    const isEmptyTile = (tileValue === 0);
+    if (isEmptyTile) {
+      return;
+    }
+
+    const newNextConfiguration = (() => {
+
+      if (!activeCheat) {
+        return moveTile(({ tileIndex, tileValue }));
+      }
+
+      const { name: activeCheatName, data: activeCheatData } = activeCheat || {};
+      
+      if (activeCheatName === useCheats.cheats.SWAP) {
+
+        const isReadyToSwap = (!_.isNil(activeCheatData) && (activeCheatData !== tileIndex));
+        if (!isReadyToSwap) {
+          const newCurrentConfiguration = [...currentConfiguration];
+          newCurrentConfiguration[tileIndex].className = styles.selected;
+          setCurrentConfiguration(newCurrentConfiguration);
+          setActiveCheatData(tileIndex);
+          return;
+        }
+
+        const otherTileIndex = activeCheatData;
+        const configuration = swapTiles(tileIndex, otherTileIndex);
+        setActiveCheatData(null);
+        setCurrentConfiguration(configuration);
+        
+        return configuration;
+
+      }
+
+      return currentConfiguration;
+
+    })();
+
     const isPuzzleSolved = _.isEqual(
       boardHelper.shrinkConfiguration(newNextConfiguration),
       boardHelper.finalConfiguration,
@@ -119,7 +173,7 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
       onSolve();
     }
     
-  }, [currentConfiguration, dispatch, getPaddedTileNeighbors, moves, onSolve]);
+  }, [activeCheat, currentConfiguration, moveTile, onSolve, setActiveCheatData, swapTiles]);
 
   React.useEffect(redirectOutIfConfigurationInvalid, [redirectOutIfConfigurationInvalid]);
 
@@ -135,7 +189,9 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
           data-tile-index={index}
           data-tile-value={tileValue}
           onClick={onTileClick}
-          className={classNames(styles.tile, tileClassName)}
+          className={classNames(styles.tile, tileClassName, {
+            [styles.withCheats]: !_.isNil(activeCheat),
+          })}
           onAnimationEnd={() => {
             setCurrentConfiguration(nextConfiguration);
           }}

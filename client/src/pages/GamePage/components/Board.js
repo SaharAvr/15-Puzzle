@@ -45,6 +45,8 @@ const extendConfiguration = configuration => _.map(configuration, value => ({
   className: (value === 0 ? styles.empty : ''),
 }));
 
+const shrinkConfiguration = configuration => _.map(configuration, 'value');
+
 const Board = ({ initialConfiguration, onSolveCallback }) => {
 
   const dispatch = useDispatch();
@@ -143,7 +145,7 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
     
     dispatch(actions.setMoves(moves + 1));
 
-    const isPuzzleSolved = _.isEqual(_.map(newNextConfiguration, 'value'), finalConfiguration);
+    const isPuzzleSolved = _.isEqual(shrinkConfiguration(newNextConfiguration), finalConfiguration);
     if (isPuzzleSolved) {
       onSolve();
     }

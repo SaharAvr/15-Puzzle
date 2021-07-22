@@ -10,10 +10,13 @@
     h1 {
         margin-bottom: 32px;
         text-align: center;
-        animation: fadeIn 250ms ease-in;
 
-        @media screen and (prefers-reduced-motion: reduce) {
-            animation: none;
+        &.withFade {
+            animation: fadeInBottomTop 500ms ease-in;
+
+            @media screen and (prefers-reduced-motion: reduce) {
+                animation: none;
+            }
         }
     }
 

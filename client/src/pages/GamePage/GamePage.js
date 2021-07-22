@@ -81,7 +81,6 @@ const GamePage = () => {
   const goToLeaderboardPage = React.useCallback(() => {
 
     history.push(pathNames.LEADERBOARD);
-    history.go();
 
   }, [history]);
 

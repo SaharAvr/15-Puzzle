@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import classNames from 'classnames';
 import _ from 'lodash';
 
 import AnimatedButton from 'shared/components/AnimatedButton';
@@ -31,11 +32,15 @@ const LeaderboardPage = () => {
   React.useEffect(loadLeaderboard, [loadLeaderboard]);
 
   return (
-    <main
-      className={styles.leaderboardPage}
-    >
+    <main className={styles.leaderboardPage}>
 
-      <h1>{leaderboardStats ? 'Leaderboard' : 'Loading...'}</h1>
+      <h1
+        className={classNames({
+          [styles.withFade]: (leaderboardStats && !_.isEmpty(leaderboardStats)),
+        })}
+      >
+        {leaderboardStats ? 'Leaderboard' : 'Loading...'}
+      </h1>
 
       {leaderboardStats && (_.isEmpty(leaderboardStats) ? (
         <h3>No stats yet... Better hurry up and play!</h3>

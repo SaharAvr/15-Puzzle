@@ -1,9 +1,11 @@
 @import '~shared/styles/_theme.scss';
 
+$gridGap: 8px;
+
 .board {
     display: grid;
     grid-template-columns: auto auto auto auto;
-    gap: 8px;
+    gap: $gridGap;
 
     .tile {
         display: flex;
@@ -18,8 +20,9 @@
         padding: 4px;
         border-radius: 4px;
         background-color: map-get($colors, "tileBackgroundActive");
+        user-select: none;
         cursor: pointer;
-        
+
         &:focus, &:hover {
             filter: brightness(1.25);
         }
@@ -29,5 +32,64 @@
             cursor: default;
             pointer-events: none;
         }
+
+        &.top {
+            animation: moveTop 100ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+        }
+
+        &.right {
+            animation: moveRight 100ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+        }
+
+        &.bottom {
+            animation: moveBottom 100ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+        }
+
+        &.left {
+            animation: moveLeft 100ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+        }
+
+        @media screen and (prefers-reduced-motion: reduce) {
+
+            &.top {
+                animation: moveTop 1ms;
+            }
+
+            &.right {
+                animation: moveRight 1ms;
+            }
+
+            &.bottom {
+                animation: moveBottom 1ms;
+            }
+
+            &.left {
+                animation: moveLeft 1ms;
+            }
+        }
     }
+}
+
+@keyframes moveTop {
+	100% {
+		transform: translate(0, calc(-100% - #{$gridGap}));
+	}
+}
+
+@keyframes moveRight {
+	100% {
+		transform: translate(calc(100% + #{$gridGap}), 0);
+	}
+}
+
+@keyframes moveBottom {
+	100% {
+		transform: translate(0, calc(100% + #{$gridGap}));
+	}
+}
+
+@keyframes moveLeft {
+	100% {
+		transform: translate(calc(-100% - #{$gridGap}), 0);
+	}
 }

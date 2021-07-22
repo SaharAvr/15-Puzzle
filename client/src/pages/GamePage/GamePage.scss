@@ -26,7 +26,7 @@
         [data-id="board"] {
             pointer-events: none;
         }
-        [data-tile] {
+        [data-tile-value] {
             background-color: map-get($colors, "tileBackgroundSolved");
         }
     }
@@ -35,8 +35,9 @@
         [data-id="board"] {
             pointer-events: none;
         }
-        [data-tile] {
+        [data-tile-value] {
             background-color: map-get($colors, "tileBackgroundInactive");
+            user-select: initial;
         }
     }
 

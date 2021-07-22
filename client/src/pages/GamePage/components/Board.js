@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -39,6 +40,11 @@ const padConfiguration = configuration => {
 
 };
 
+const extendConfiguration = configuration => _.map(configuration, value => ({
+  value,
+  className: (value === 0 ? styles.empty : ''),
+}));
+
 const Board = ({ initialConfiguration, onSolveCallback }) => {
 
   const dispatch = useDispatch();
@@ -50,7 +56,10 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
     _.chain(initialConfiguration).sortBy().isEqual(sortedValidConfiguration).value()
   ), [initialConfiguration]);
 
-  const [currentConfiguration, setCurrentConfiguration] = React.useState(initialConfiguration);
+  const extendedInitialConfiguration = React.useMemo(() => extendConfiguration(initialConfiguration), [initialConfiguration]);
+  
+  const [currentConfiguration, setCurrentConfiguration] = React.useState(extendedInitialConfiguration);
+  const [nextConfiguration, setNextConfiguration] = React.useState();
   const paddedConfiguration = React.useMemo(() => padConfiguration(currentConfiguration), [currentConfiguration]);
 
   const redirectOutIfConfigurationInvalid = React.useCallback(() => {
@@ -87,19 +96,19 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
     return {
       top: {
         index: (paddedTileIndex - paddedPuzzleSideSize),
-        tile: paddedConfiguration[(paddedTileIndex - paddedPuzzleSideSize)],
+        value: paddedConfiguration[(paddedTileIndex - paddedPuzzleSideSize)]?.value,
       },
       right: {
         index: (paddedTileIndex + 1),
-        tile: paddedConfiguration[(paddedTileIndex + 1)],
+        value: paddedConfiguration[(paddedTileIndex + 1)]?.value,
       },
       bottom: {
         index: (paddedTileIndex + paddedPuzzleSideSize),
-        tile: paddedConfiguration[(paddedTileIndex + paddedPuzzleSideSize)],
+        value: paddedConfiguration[(paddedTileIndex + paddedPuzzleSideSize)]?.value,
       },
       left: {
         index: (paddedTileIndex - 1),
-        tile: paddedConfiguration[(paddedTileIndex - 1)],
+        value: paddedConfiguration[(paddedTileIndex - 1)]?.value,
       },
     };
 
@@ -107,31 +116,34 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
   
   const onTileClick = React.useCallback(e => {
     
-    const tile = Number(e.target.dataset.tile);
-    const tileIndex = Number(e.target.dataset.index);
+    const tileValue = Number(e.target.dataset.tileValue);
+    const tileIndex = Number(e.target.dataset.tileIndex);
 
-    const isEmptyTile = (tile === 0);
+    const isEmptyTile = (tileValue === 0);
     if (isEmptyTile) {
       return;
     }
 
     const paddedTileNeighbors = getPaddedTileNeighbors(tileIndex);
 
-    const isEmptyTileNeighbor = _.some(paddedTileNeighbors, ({ tile: neighborTile }) => neighborTile === 0);
-    if (!isEmptyTileNeighbor) {
+    const movementDirection = _.findKey(paddedTileNeighbors, ({ value: neighborTileValue }) => (neighborTileValue === 0));
+    if (!movementDirection) {
       return;
     }
+    
+    const newCurrentConfiguration = [...currentConfiguration];
+    newCurrentConfiguration[tileIndex] = { value: tileValue, className: styles[movementDirection] };
+    setCurrentConfiguration(newCurrentConfiguration);
 
-    const nextConfiguration = [...currentConfiguration];
-    const emptyTileIndex = _.findIndex(currentConfiguration, value => (value === 0));
-
-    nextConfiguration[emptyTileIndex] = tile;
-    nextConfiguration[tileIndex] = 0;
-
-    setCurrentConfiguration(nextConfiguration);
+    const newNextConfiguration = [...currentConfiguration];
+    const emptyTileIndex = _.findIndex(currentConfiguration, ({ value }) => (value === 0));
+    newNextConfiguration[emptyTileIndex] = { value: tileValue, className: '' };
+    newNextConfiguration[tileIndex] = { value: 0, className: styles.empty };
+    setNextConfiguration(newNextConfiguration);
+    
     dispatch(actions.setMoves(moves + 1));
 
-    const isPuzzleSolved = _.isEqual(nextConfiguration, finalConfiguration);
+    const isPuzzleSolved = _.isEqual(newNextConfiguration, finalConfiguration);
     if (isPuzzleSolved) {
       onSolve();
     }
@@ -145,18 +157,19 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
   return (
     <div className={styles.board} data-id="board">
 
-      {_.map(currentConfiguration, (tile, index) => (
+      {_.map(currentConfiguration, ({ value: tileValue, className: tileClassName }, index) => (
         <div
           role="none"
           key={_.uniqueId(index)}
-          className={classNames(styles.tile, {
-            [styles.empty]: (tile === 0),
-          })}
-          data-index={index}
-          data-tile={tile}
+          data-tile-index={index}
+          data-tile-value={tileValue}
           onClick={onTileClick}
+          className={classNames(styles.tile, tileClassName)}
+          onAnimationEnd={() => {
+            setCurrentConfiguration(nextConfiguration);
+          }}
         >
-          {tile}
+          {tileValue}
         </div>
       ))}
 

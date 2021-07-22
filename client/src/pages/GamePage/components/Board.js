@@ -143,7 +143,7 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
     
     dispatch(actions.setMoves(moves + 1));
 
-    const isPuzzleSolved = _.isEqual(newNextConfiguration, finalConfiguration);
+    const isPuzzleSolved = _.isEqual(_.map(newNextConfiguration, 'value'), finalConfiguration);
     if (isPuzzleSolved) {
       onSolve();
     }

@@ -30,7 +30,6 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
   
   const [currentConfiguration, setCurrentConfiguration] = React.useState(extendedInitialConfiguration);
   const [nextConfiguration, setNextConfiguration] = React.useState();
-  const paddedConfiguration = React.useMemo(() => boardHelper.padConfiguration(currentConfiguration), [currentConfiguration]);
 
   const redirectOutIfConfigurationInvalid = React.useCallback(() => {
 
@@ -58,56 +57,62 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
     onSolveCallback();
 
   }, [dispatch, onSolveCallback]);
-
-  const getPaddedTileNeighbors = React.useCallback(tileIndex => {
-
-    const paddedTileIndex = boardHelper.transformToPaddedIndex(tileIndex);
-      
-    return {
-      top: {
-        index: (paddedTileIndex - boardHelper.paddedPuzzleSideSize),
-        value: paddedConfiguration[(paddedTileIndex - boardHelper.paddedPuzzleSideSize)]?.value,
-      },
-      right: {
-        index: (paddedTileIndex + 1),
-        value: paddedConfiguration[(paddedTileIndex + 1)]?.value,
-      },
-      bottom: {
-        index: (paddedTileIndex + boardHelper.paddedPuzzleSideSize),
-        value: paddedConfiguration[(paddedTileIndex + boardHelper.paddedPuzzleSideSize)]?.value,
-      },
-      left: {
-        index: (paddedTileIndex - 1),
-        value: paddedConfiguration[(paddedTileIndex - 1)]?.value,
-      },
-    };
-
-  }, [paddedConfiguration]);
   
-  const moveTile = React.useCallback(({ tileIndex, tileValue }) => {
+  const moveTiles = React.useCallback(tileIndex => {
 
-    const paddedTileNeighbors = getPaddedTileNeighbors(tileIndex);
+    const emptyTileIndex = _.findIndex(currentConfiguration, ({ value }) => (value === 0));
+    const sideAndNeighborIndexes = boardHelper.getSideAndNeighborIndexes({ tileIndex, emptyTileIndex, includeCurrentIndex: true }) || {};
+    const canMoveTile = !_.isEmpty(sideAndNeighborIndexes);
 
-    const movementDirection = _.findKey(paddedTileNeighbors, ({ value: neighborTileValue }) => (neighborTileValue === 0));
-    if (!movementDirection) {
+    if (!canMoveTile) {
       return;
     }
-    
-    const newCurrentConfiguration = [...currentConfiguration];
-    newCurrentConfiguration[tileIndex] = { value: tileValue, className: styles[movementDirection] };
-    setCurrentConfiguration(newCurrentConfiguration);
 
-    const newNextConfiguration = [...currentConfiguration];
-    const emptyTileIndex = _.findIndex(currentConfiguration, ({ value }) => (value === 0));
-    newNextConfiguration[emptyTileIndex] = { value: tileValue, className: '' };
-    newNextConfiguration[tileIndex] = { value: 0, className: styles.empty };
-    setNextConfiguration(newNextConfiguration);
+    const { side, indexes: currentAndNeighborTileIndexes } = sideAndNeighborIndexes;
+
+    const newCurrentConfiguration = (() => {
+
+      const currentConfigurationCopy = [...currentConfiguration];
     
+      _.forEach(currentAndNeighborTileIndexes, currentOrNeighborTileIndex => {
+        currentConfigurationCopy[currentOrNeighborTileIndex].className = styles[side];
+      });
+
+      return currentConfigurationCopy;
+      
+    })();
+
+    const newNextConfiguration = (() => {
+      
+      const currentConfigurationCopy = [...currentConfiguration];
+      const sizeOfCurrentOrNeighborTileIndexes = _.size(currentAndNeighborTileIndexes);
+
+      _.forEach(currentAndNeighborTileIndexes, (currentOrNeighborTileIndex, index) => {
+        
+        if (index === 0) {
+          currentConfigurationCopy[currentOrNeighborTileIndex] = { value: 0, className: styles.empty };
+        }
+
+        if (index < (sizeOfCurrentOrNeighborTileIndexes - 1)) {
+          currentConfigurationCopy[currentAndNeighborTileIndexes[index + 1]] = { ...currentConfiguration[currentOrNeighborTileIndex], className: '' };
+          return;
+        }
+
+        currentConfigurationCopy[emptyTileIndex] = { ...currentConfiguration[currentOrNeighborTileIndex], className: '' };
+      
+      });
+
+      return currentConfigurationCopy;
+
+    })();
+
+    setCurrentConfiguration(newCurrentConfiguration);
+    setNextConfiguration(newNextConfiguration);
     dispatch(actions.setMoves(moves + 1));
 
     return newNextConfiguration;
 
-  }, [currentConfiguration, dispatch, getPaddedTileNeighbors, moves]);
+  }, [currentConfiguration, dispatch, moves]);
 
   const swapTiles = React.useCallback((tile1Index, tile2Index) => {
 
@@ -135,7 +140,7 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
     const newNextConfiguration = (() => {
 
       if (!activeCheat) {
-        return moveTile(({ tileIndex, tileValue }));
+        return moveTiles(tileIndex);
       }
 
       const { name: activeCheatName, data: activeCheatData } = activeCheat || {};
@@ -173,7 +178,7 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
       onSolve();
     }
     
-  }, [activeCheat, currentConfiguration, moveTile, onSolve, setActiveCheatData, swapTiles]);
+  }, [activeCheat, currentConfiguration, moveTiles, onSolve, setActiveCheatData, swapTiles]);
 
   React.useEffect(redirectOutIfConfigurationInvalid, [redirectOutIfConfigurationInvalid]);
 

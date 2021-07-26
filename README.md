@@ -23,7 +23,7 @@ $ npm run start-dev
 ### Play online
 
 This project has been deployed to Heroku so you can also play online, via the following link:
-https://fifteen-puzzle-server.herokuapp.com/
+https://www.15-puzzle.net/
 
 ![Image of 15-Puzzle game mode](https://raw.githubusercontent.com/SaharAvr/15-Puzzle/assets/game.png)
 

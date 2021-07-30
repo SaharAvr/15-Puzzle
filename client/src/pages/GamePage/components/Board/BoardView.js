@@ -24,6 +24,7 @@ const BoardView = ({
         onClick={onTileClick}
         className={classNames(styles.tile, tileClassName, {
           [styles.withCheats]: !_.isEmpty(activeCheat),
+          [styles[activeCheat.name]]: activeCheat.name,
         })}
         onAnimationEnd={() => {
           setCurrentConfiguration(nextConfiguration);

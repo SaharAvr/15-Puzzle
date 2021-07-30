@@ -15,7 +15,7 @@ const clearanceTimeoutDelay = 3000;
 
 const useCheats = () => {
 
-  const [activeCheat, setActiveCheat] = React.useState();
+  const [activeCheat, setActiveCheat] = React.useState({});
   const [cheatString, setCheatString] = React.useState('');
   const cheatStringRef = React.useRef(cheatString);
   const clearanceTimeoutRef = React.useRef();
@@ -38,7 +38,7 @@ const useCheats = () => {
 
   const listenToCheatStrings = React.useCallback(() => {
 
-    if (activeCheat) {
+    if (!_.isEmpty(activeCheat)) {
 
       const didTurnCheatOff = (new RegExp(`.*${activeCheat.name}.*`, 'i')).test(cheatString);
 
@@ -48,7 +48,7 @@ const useCheats = () => {
 
       // eslint-disable-next-line no-console
       console.log('[CHEAT MODE OFF]');
-      setActiveCheat(null);
+      setActiveCheat({});
       setCheatString('');
 
       return;

@@ -139,7 +139,7 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
 
     const newNextConfiguration = (() => {
 
-      if (!activeCheat) {
+      if (_.isEmpty(activeCheat)) {
         return moveTiles(tileIndex);
       }
 

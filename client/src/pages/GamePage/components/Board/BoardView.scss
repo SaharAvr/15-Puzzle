@@ -69,20 +69,23 @@ $gridGap: 8px;
         }
 
         &.withCheats {
-            background-color: map-get($colors, "tileBackgroundWithCheats");
-            animation: flicker 1s cubic-bezier(0.39, 0.575, 0.565, 1) infinite;
+            &.swap {
+                background-color: map-get($colors, "cheatsSwapTlieBackground");
+                animation: flicker 1s cubic-bezier(0.39, 0.575, 0.565, 1) infinite;
 
-            &:focus, &:hover {
-                animation: none;
-                background-color: map-get($colors, "tileBackgroundWithCheatsActive");
-            }
-            // @media screen and (prefers-reduced-motion: reduce) {
-            //     animation: none;
-            // }
+                @media screen and (prefers-reduced-motion: reduce) {
+                    animation: none;
+                }
 
-            &.selected {
-                animation: none;
-                background-color: map-get($colors, "tileBackgroundWithCheatsActive");
+                &:focus, &:hover {
+                    animation: none;
+                    background-color: map-get($colors, "cheatsSwapTlieBackgroundActive");
+                }
+
+                &.selected {
+                    animation: none;
+                    background-color: map-get($colors, "cheatsSwapTlieBackgroundActive");
+                }
             }
         }
     }

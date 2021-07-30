@@ -7,6 +7,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import MainPage from 'pages/MainPage';
 import GamePage from 'pages/GamePage';
 import LeaderboardPage from 'pages/LeaderboardPage';
+import Services from 'shared/services/Services';
 import { pathNames } from 'shared/routes/consts';
 
 import initStore from './store/init';
@@ -24,6 +25,7 @@ const App = () => (
           <Redirect to={pathNames.MAIN}/>
         </Switch>
       </Router>
+      <Services/>
     </PersistGate>
   </ReduxProvider>
 );

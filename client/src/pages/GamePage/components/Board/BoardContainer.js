@@ -1,8 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import _ from 'lodash';
 
 import { pathNames } from 'shared/routes/consts';
@@ -11,7 +10,8 @@ import actions from 'store/actions';
 
 import useCheats from './useCheats';
 import * as boardHelper from './boardHelper';
-import styles from './Board.scss';
+import BoardView from './BoardView';
+import styles from './BoardView.scss';
 
 const Board = ({ initialConfiguration, onSolveCallback }) => {
 
@@ -29,7 +29,7 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
   const extendedInitialConfiguration = React.useMemo(() => boardHelper.extendConfiguration(initialConfiguration), [initialConfiguration]);
   
   const [currentConfiguration, setCurrentConfiguration] = React.useState(extendedInitialConfiguration);
-  const [nextConfiguration, setNextConfiguration] = React.useState();
+  const [nextConfiguration, setNextConfiguration] = React.useState([]);
 
   const redirectOutIfConfigurationInvalid = React.useCallback(() => {
 
@@ -60,7 +60,7 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
   
   const moveTiles = React.useCallback(tileIndex => {
 
-    const emptyTileIndex = _.findIndex(currentConfiguration, ({ value }) => (value === 0));
+    const emptyTileIndex = _.findIndex(currentConfiguration, ({ value: 0 }));
     const sideAndNeighborIndexes = boardHelper.getSideAndNeighborIndexes({ tileIndex, emptyTileIndex, includeCurrentIndex: true }) || {};
     const canMoveTile = !_.isEmpty(sideAndNeighborIndexes);
 
@@ -185,27 +185,15 @@ const Board = ({ initialConfiguration, onSolveCallback }) => {
   React.useEffect(startGameIfConfigurationValid, [startGameIfConfigurationValid]);
 
   return (
-    <div className={styles.board} data-id="board">
-
-      {_.map(currentConfiguration, ({ value: tileValue, className: tileClassName }, index) => (
-        <div
-          role="none"
-          key={_.uniqueId(index)}
-          data-tile-index={index}
-          data-tile-value={tileValue}
-          onClick={onTileClick}
-          className={classNames(styles.tile, tileClassName, {
-            [styles.withCheats]: !_.isNil(activeCheat),
-          })}
-          onAnimationEnd={() => {
-            setCurrentConfiguration(nextConfiguration);
-          }}
-        >
-          {tileValue}
-        </div>
-      ))}
-
-    </div>
+    <BoardView
+      {...{
+        activeCheat,
+        currentConfiguration,
+        setCurrentConfiguration,
+        nextConfiguration,
+        onTileClick,
+      }}
+    />
   );
 
 };

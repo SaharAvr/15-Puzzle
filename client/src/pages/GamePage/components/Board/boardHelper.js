@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import styles from './Board.scss';
+import styles from './BoardView.scss';
 
 const puzzleSideSize = 4;
 export const paddedPuzzleSideSize = (puzzleSideSize + 2);

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import analyticsService from './analytics';
 import hotjarService from './hotjar';
 
 const isProduction = (process.env.NODE_ENV === 'production');
@@ -12,6 +13,7 @@ const Services = () => {
       return;
     }
 
+    analyticsService.init();
     hotjarService.init();
     
   }, []);

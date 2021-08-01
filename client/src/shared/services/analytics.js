@@ -9,6 +9,11 @@ class AnalyticsService {
     if (this.instance) {
       return;
     }
+
+    if (window.dataLayer) {
+      this.instance = window.dataLater;
+      return;
+    }
     
     const dataLayerScript = document.createElement('script');
     dataLayerScript.src = `
@@ -17,15 +22,13 @@ class AnalyticsService {
         gtag('js', new Date());
         gtag('config', 'G-5RMBP9Q75D');
     `;
-    dataLayerScript.onload = () => {
-      this.instace = window.dataLater;
-    };
 
     const gtagScript = document.createElement('script');
     gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-5RMBP9Q75D';
     gtagScript.async = true;
     gtagScript.onload = () => {
       document.head.appendChild(dataLayerScript);
+      this.instace = window.dataLater;
     };
 
     document.head.appendChild(gtagScript);

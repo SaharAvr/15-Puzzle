@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 
-const _ = require('lodash');
 const path = require('path');
 const fs = require('fs-extra');
 
 const rootPath = path.join.bind(path, __dirname);
 
 const dirPaths = {
+  ROOT: rootPath('.'),
   CLIENT: rootPath('./client'),
   BUILD: rootPath('./client/build'),
 };
@@ -57,11 +57,37 @@ const deploy = () => (
 
 );
 
+const commitChanges = async () => {
+
+  await spawnPromise('git', ['add --all'], {
+    cwd: dirPaths.ROOT,
+    shell: true,
+  });
+
+  await spawnPromise('git', [`commit -m '[FEAT] build - ${new Date().toLocaleDateString('he-IL').replace(/\./g, '/')}'`], {
+    cwd: dirPaths.ROOT,
+    shell: true,
+  });
+
+};
+
+const uncommitChanges = () => (
+
+  spawnPromise('git', ['reset --hard HEAD~1'], {
+    cwd: dirPaths.ROOT,
+    shell: true,
+  })
+
+);
+
+
 (async () => {
 
     deleteBuildFolder();
     await buildProject();
+    await commitChanges();
     await deploy();
+    await uncommitChanges();
     deleteBuildFolder();
 
 })();

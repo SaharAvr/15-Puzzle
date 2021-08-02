@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 
+const _ = require('lodash');
 const path = require('path');
 const fs = require('fs-extra');
 
 const rootPath = path.join.bind(path, __dirname);
 
 const dirPaths = {
-  ROOT: rootPath,
   CLIENT: rootPath('./client'),
   BUILD: rootPath('./client/build'),
 };
@@ -29,11 +29,15 @@ const spawnPromise = (cmd, args, options) => {
   
 };
 
-const deleteBuildFolder = () => (
-    
-  fs.rmSync(dirPaths.BUILD, { recursive: true })
+const deleteBuildFolder = () => {
 
-);
+  if (!fs.existsSync(dirPaths.BUILD)) {
+    return;
+  }
+
+  fs.rmSync(dirPaths.BUILD, { recursive: true });
+
+};
 
 const buildProject = () => (
 

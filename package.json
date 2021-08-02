@@ -10,6 +10,14 @@
   "scripts": {
     "install": "(cd server && yarn) & (cd client && yarn)",
     "start": "cd server && yarn start",
-    "start-dev": "yarn install && ((cd server && yarn start-dev) & (cd client && yarn start-dev))"
+    "start-dev": "yarn install && ((cd server && yarn start-dev) & (cd client && yarn start-dev))",
+    "deploy": "node deploy.js"
+  },
+  "dependencies": {
+    "fs-extra": "^10.0.0",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "child_process": "^1.0.2"
   }
 }

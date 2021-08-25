@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import loggerService from './logger';
 
 class AnalyticsService {
@@ -11,8 +9,8 @@ class AnalyticsService {
   init() {
 
     loggerService.info('[AnalyticsService] init');
-
-    if (!_.has(window.dataLayer)) {
+    
+    if (!window.dataLayer) {
       loggerService.info('[AnalyticsService] init > ga not found');
       return;
     }

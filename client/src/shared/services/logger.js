@@ -7,12 +7,12 @@ const severityTypes = {
 class LoggerService {
 
   constructor() {
-    this.isOn = null;
+    this.isOn = false;
     this.severity = severityTypes;
   }
 
-  init(options) {
-    this.isOn = options.isOn;
+  init() {
+    this.isOn = true;
   }
 
   logToConsole(severity, ...rest) {

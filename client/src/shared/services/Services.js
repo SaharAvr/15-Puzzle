@@ -1,5 +1,6 @@
 import React from 'react';
 
+import loggerService from './logger';
 import analyticsService from './analytics';
 import hotjarService from './hotjar';
 
@@ -13,6 +14,7 @@ const Services = () => {
       return;
     }
 
+    loggerService.init();
     analyticsService.init();
     hotjarService.init();
     
